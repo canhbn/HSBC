@@ -17,6 +17,11 @@ const submitPin = document.getElementById("submitPin");
 
 const rowCA = document.getElementById("rowCA");
 const rowCC = document.getElementById("rowCC");
+const logoffBtn = document.getElementById("logoffBtn");
+
+// Screen 3 amounts
+const amountCA = document.getElementById("amountCA");
+const amountCC = document.getElementById("amountCC");
 
 // Screen 4 txn DOM
 const txnLoading = document.getElementById("txnLoading");
@@ -141,7 +146,56 @@ function wirePinBoxes(){
 }
 
 /* =======================
-   Transactions from TXT
+   Balances from TXT (Screen 3)
+======================= */
+
+function formatMoneyVND(n){
+  const abs = Math.abs(n);
+  const s = abs.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return (n < 0 ? "-" : "") + s + " VND";
+}
+
+function parseBalancesTxt(txt){
+  const out = new Map();
+  txt.split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"))
+    .forEach(line => {
+      const [k, v] = line.split("|").map(x => (x || "").trim());
+      const num = Number(v);
+      if (k && Number.isFinite(num)) out.set(k, num);
+    });
+  return out;
+}
+
+function applyAmount(el, value){
+  el.textContent = formatMoneyVND(value);
+  el.classList.remove("pos", "neg");
+  el.classList.add(value >= 0 ? "pos" : "neg");
+}
+
+async function loadBalances(){
+  // show placeholders while loading
+  amountCA.textContent = "—";
+  amountCC.textContent = "—";
+  amountCA.classList.remove("pos","neg");
+  amountCC.classList.remove("pos","neg");
+
+  try{
+    const res = await fetch("./balances.txt", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const txt = await res.text();
+    const m = parseBalancesTxt(txt);
+
+    if (m.has("CA")) applyAmount(amountCA, m.get("CA"));
+    if (m.has("CC")) applyAmount(amountCC, m.get("CC"));
+  } catch(e){
+    // keep placeholders if file missing / error
+  }
+}
+
+/* =======================
+   Transactions from TXT (Screen 4)
 ======================= */
 
 function formatVND(n){
@@ -158,13 +212,7 @@ function parseTransactionsTxt(txt){
     .map(line => {
       const parts = line.split("|").map(x => (x || "").trim());
       const [date, name, amount, ref, desc] = parts;
-      return {
-        date,
-        name,
-        amount: Number(amount),
-        ref,
-        desc
-      };
+      return { date, name, amount: Number(amount), ref, desc };
     })
     .filter(r => r.date && r.name && Number.isFinite(r.amount));
 }
@@ -182,7 +230,7 @@ function renderTransactions(rows){
   txnContainer.innerHTML = "";
   const grouped = groupByDate(rows);
 
-  grouped.forEach(([date, items], gi) => {
+  grouped.forEach(([date, items]) => {
     const chip = document.createElement("div");
     chip.className = "date-chip";
     chip.textContent = date;
@@ -205,7 +253,6 @@ function renderTransactions(rows){
 
       top.appendChild(left);
       top.appendChild(right);
-
       wrap.appendChild(top);
 
       if (t.ref) {
@@ -214,7 +261,6 @@ function renderTransactions(rows){
         sub1.textContent = t.ref;
         wrap.appendChild(sub1);
       }
-
       if (t.desc) {
         const sub2 = document.createElement("div");
         sub2.className = "txn-sub";
@@ -224,7 +270,6 @@ function renderTransactions(rows){
 
       txnContainer.appendChild(wrap);
 
-      // Optional divider between items of same date (keeps your “mờ” separators)
       if (i < items.length - 1) {
         const d = document.createElement("div");
         d.className = "divider";
@@ -240,7 +285,6 @@ async function loadCurrentAccountTxns(){
   txnContainer.innerHTML = "";
 
   try{
-    // no-store to avoid stale cache when you edit txt
     const res = await fetch("./transactions_current.txt", { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const txt = await res.text();
@@ -264,7 +308,7 @@ goPinBtn.addEventListener("click", () => {
   setTimeout(() => focusBox(0), 50);
 });
 
-// Continue (only enabled when 6 digits entered)
+// Continue
 submitPin.addEventListener("click", () => {
   const v = getPinValue();
   if (v.length !== 6 || v !== PIN_OK) {
@@ -276,6 +320,13 @@ submitPin.addEventListener("click", () => {
   }
   pinError.classList.add("hidden");
   showScreen("s3");
+  loadBalances(); // load amounts whenever entering screen 3
+});
+
+// Screen 3: log-off -> screen 1
+logoffBtn.addEventListener("click", () => {
+  clearPin();
+  showScreen("s1");
 });
 
 // Screen 3 navigation (tap row)

@@ -61,29 +61,44 @@
       <!-- Screen 3 -->
       <section class="screen hidden" id="s3">
         <div class="accounts-header">
-          <div class="accounts-title">Accounts</div>
+          <div class="accounts-header-row">
+            <div class="accounts-title">Accounts</div>
+
+            <button class="icon-btn" id="logoffBtn" type="button" aria-label="Log off">
+              <!-- simple log-off icon (door + arrow) -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M10 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M14 12H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 9l-3 3 3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="card">
           <button class="rowtap" id="rowCA" type="button" aria-label="Open Current Account">
-            <div class="row">
-              <div>
+            <div class="row v2">
+              <div class="info">
                 <div class="b">Current Account</div>
                 <div class="m">104-******-041</div>
+                <div class="amount-line">
+                  <span class="amount" id="amountCA">—</span>
+                </div>
               </div>
-              <div class="amount pos">1,000,000.00 VND</div>
             </div>
           </button>
 
           <div class="divider"></div>
 
           <button class="rowtap" id="rowCC" type="button" aria-label="Open Credit Card">
-            <div class="row">
-              <div>
+            <div class="row v2">
+              <div class="info">
                 <div class="b">MasterCard Premier Credit Card</div>
                 <div class="m">5460-****-****-2116</div>
+                <div class="amount-line">
+                  <span class="amount" id="amountCC">—</span>
+                </div>
               </div>
-              <div class="amount neg">-64,656,646.00 VND</div>
             </div>
           </button>
         </div>

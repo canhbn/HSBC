@@ -130,13 +130,40 @@ body{
   background:var(--red);
   color:#fff;
   border-radius:14px;
-  padding:14px 16px;
+  padding:10px 12px;
+}
+.accounts-header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 .accounts-title{
   font-size:20px;
   font-weight:800;
   letter-spacing:-0.02em;
 }
+
+.icon-btn{
+  width:40px;
+  height:40px;
+  border:none;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+.icon-btn svg{
+  width:22px;
+  height:22px;
+}
+.icon-btn:active{
+  background:rgba(255,255,255,0.20);
+}
+
 .card{
   margin-top:12px;
   background:var(--card);
@@ -162,13 +189,20 @@ body{
   gap:12px;
   padding:14px 14px;
 }
+.row.v2 .info{
+  width:100%;
+}
 .b{ font-weight:800; font-size:16px; }
 .m{ color:var(--muted); font-size:13px; margin-top:4px; }
 
+/* Amount under account number, right aligned */
+.amount-line{
+  margin-top:8px;
+  text-align:right;
+}
 .amount{
   font-weight:800;
   font-size:15px;
-  text-align:right;
   white-space:nowrap;
 }
 .amount.pos{ color:var(--green); }
