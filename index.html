@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="HSBC Mock" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>HSBC Mock</title>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" id="topbar">
+      <button class="back hidden" id="backBtn" aria-label="Back">‹</button>
+      <div class="topbar-title" id="topTitle"></div>
+    </header>
+
+    <main class="main" id="main">
+
+      <!-- Screen 1 -->
+      <section class="screen" id="s1">
+        <div class="hero">
+          <div class="t1">Hi</div>
+          <div class="t2">can****</div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-red" id="goPin">Log on with PIN</button>
+        </div>
+      </section>
+
+      <!-- Screen 2 -->
+      <section class="screen hidden" id="s2">
+        <div class="panel">
+          <div class="h1">Log on to HSBC Mobile Banking app</div>
+          <div class="h2">Enter your 6-digit PIN</div>
+
+          <div class="pin-row">
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin" id="pinInput"
+                   placeholder="••••••" aria-label="PIN" />
+          </div>
+
+          <div class="error hidden" id="pinError">
+            You've entered your PIN incorrectly. Please try again.
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-red" id="submitPin">Continue</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 3 -->
+      <section class="screen hidden" id="s3">
+        <div class="accounts-header">
+          <div class="accounts-title">Accounts</div>
+        </div>
+
+        <div class="card">
+          <!-- Row 1: tap anywhere -->
+          <button class="rowtap" id="rowCA" type="button" aria-label="Open Current Account">
+            <div class="row">
+              <div>
+                <div class="b">Current Account</div>
+                <div class="m">104-******-041</div>
+              </div>
+              <div class="amount pos">1,000,000.00 VND</div>
+            </div>
+          </button>
+
+          <div class="divider"></div>
+
+          <!-- Row 2: tap anywhere -->
+          <button class="rowtap" id="rowCC" type="button" aria-label="Open Credit Card">
+            <div class="row">
+              <div>
+                <div class="b">MasterCard Premier Credit Card</div>
+                <div class="m">5460-****-****-2116</div>
+              </div>
+              <div class="amount neg">-64,656,646.00 VND</div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Screen 4 -->
+      <section class="screen hidden" id="s4">
+        <div class="center-head">
+          <div class="ct1">Current Account</div>
+          <div class="ct2">104-******-041</div>
+        </div>
+
+        <div class="section-title">Transaction history</div>
+
+        <div class="date-chip">Jan 25, 2026</div>
+        <div class="txn">
+          <div class="txn-top">
+            <div class="txn-left">BUI NHAT CANH</div>
+            <div class="txn-right neg">-20,000 VND</div>
+          </div>
+          <div class="txn-sub">161194538</div>
+          <div class="txn-sub">Vietlott</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="txn">
+          <div class="txn-top">
+            <div class="txn-left">BUI NHAT CANH</div>
+            <div class="txn-right pos">40,000 VND</div>
+          </div>
+          <div class="txn-sub">161194538</div>
+          <div class="txn-sub">Vietlott</div>
+        </div>
+
+        <div class="date-chip">Jan 26, 2026</div>
+
+        <div class="txn">
+          <div class="txn-top">
+            <div class="txn-left">BUI NHAT CANH</div>
+            <div class="txn-right pos">50,000 VND</div>
+          </div>
+          <div class="txn-sub">161194538</div>
+          <div class="txn-sub">Vietlott</div>
+        </div>
+      </section>
+
+      <!-- Screen 5 -->
+      <section class="screen hidden" id="s5">
+        <div class="center-head">
+          <div class="ct1">MasterCard Premier Credit Card</div>
+          <div class="ct2">5460-****-****-2116</div>
+        </div>
+
+        <div class="section-title">Transaction history</div>
+
+        <div class="busy">System busy. Unable to load transaction.</div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
