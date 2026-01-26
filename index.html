@@ -17,10 +17,10 @@
   <div class="app">
     <header class="topbar" id="topbar">
       <button class="back hidden" id="backBtn" aria-label="Back">‹</button>
-      <div class="topbar-title" id="topTitle"></div>
+      <div class="topbar-title"></div>
     </header>
 
-    <main class="main" id="main">
+    <main class="main">
 
       <!-- Screen 1 -->
       <section class="screen" id="s1">
@@ -39,9 +39,13 @@
           <div class="h1">Log on to HSBC Mobile Banking app</div>
           <div class="h2">Enter your 6-digit PIN</div>
 
-          <div class="pin-row">
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="6" class="pin" id="pinInput"
-                   placeholder="••••••" aria-label="PIN" />
+          <div class="pin6" id="pin6" aria-label="6-digit PIN">
+            <input class="pinbox" id="pin0" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+            <input class="pinbox" id="pin1" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+            <input class="pinbox" id="pin2" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+            <input class="pinbox" id="pin3" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+            <input class="pinbox" id="pin4" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+            <input class="pinbox" id="pin5" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
           </div>
 
           <div class="error hidden" id="pinError">
@@ -49,7 +53,7 @@
           </div>
 
           <div class="actions">
-            <button class="btn btn-red" id="submitPin">Continue</button>
+            <button class="btn btn-red" id="submitPin" disabled>Continue</button>
           </div>
         </div>
       </section>
@@ -61,7 +65,6 @@
         </div>
 
         <div class="card">
-          <!-- Row 1: tap anywhere -->
           <button class="rowtap" id="rowCA" type="button" aria-label="Open Current Account">
             <div class="row">
               <div>
@@ -74,7 +77,6 @@
 
           <div class="divider"></div>
 
-          <!-- Row 2: tap anywhere -->
           <button class="rowtap" id="rowCC" type="button" aria-label="Open Credit Card">
             <div class="row">
               <div>
@@ -96,37 +98,9 @@
 
         <div class="section-title">Transaction history</div>
 
-        <div class="date-chip">Jan 25, 2026</div>
-        <div class="txn">
-          <div class="txn-top">
-            <div class="txn-left">BUI NHAT CANH</div>
-            <div class="txn-right neg">-20,000 VND</div>
-          </div>
-          <div class="txn-sub">161194538</div>
-          <div class="txn-sub">Vietlott</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="txn">
-          <div class="txn-top">
-            <div class="txn-left">BUI NHAT CANH</div>
-            <div class="txn-right pos">40,000 VND</div>
-          </div>
-          <div class="txn-sub">161194538</div>
-          <div class="txn-sub">Vietlott</div>
-        </div>
-
-        <div class="date-chip">Jan 26, 2026</div>
-
-        <div class="txn">
-          <div class="txn-top">
-            <div class="txn-left">BUI NHAT CANH</div>
-            <div class="txn-right pos">50,000 VND</div>
-          </div>
-          <div class="txn-sub">161194538</div>
-          <div class="txn-sub">Vietlott</div>
-        </div>
+        <div id="txnLoading" class="busy">Loading transactions...</div>
+        <div id="txnError" class="error hidden">Unable to load transaction history.</div>
+        <div id="txnContainer"></div>
       </section>
 
       <!-- Screen 5 -->

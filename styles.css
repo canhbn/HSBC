@@ -4,7 +4,7 @@
   --text:#111;
   --muted:#6b6b6f;
   --border:#d9d9de;
-  --red:#db0011;        /* HSBC-like red */
+  --red:#db0011;
   --green:#0a8f3c;
 }
 
@@ -36,11 +36,6 @@ body{
   align-items:center;
   gap:10px;
   min-height:52px;
-}
-.topbar-title{
-  font-size:17px;
-  font-weight:600;
-  color:var(--text);
 }
 .back{
   border:none;
@@ -83,6 +78,7 @@ body{
   color:#fff;
 }
 .btn-red:active{ filter:brightness(0.92); }
+.btn:disabled{ opacity:0.45; }
 
 /* Screen 2 */
 .panel{
@@ -93,17 +89,32 @@ body{
 }
 .h1{ font-size:18px; font-weight:700; margin-bottom:6px; }
 .h2{ font-size:14px; color:var(--muted); margin-bottom:14px; }
-.pin-row{ display:flex; gap:10px; margin-bottom:10px; }
-.pin{
+
+/* 6 PIN boxes */
+.pin6{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin: 4px 0 10px;
+}
+.pinbox{
   width:100%;
-  padding:14px 12px;
+  max-width:54px;
+  height:54px;
   border-radius:12px;
   border:1px solid var(--border);
-  font-size:18px;
-  letter-spacing:0.22em;
-  text-align:center;
   background:#fff;
+  font-size:20px;
+  font-weight:700;
+  text-align:center;
+  outline:none;
 }
+.pinbox:focus{
+  border-color: rgba(219,0,17,0.55);
+  box-shadow: 0 0 0 4px rgba(219,0,17,0.12);
+}
+.pinbox.filled{ border-color: rgba(0,0,0,0.18); }
+
 .error{
   background:#fff2f2;
   border:1px solid #ffd0d0;
@@ -142,9 +153,7 @@ body{
   padding:0;
   text-align:left;
 }
-.rowtap:active{
-  background:rgba(0,0,0,0.04);
-}
+.rowtap:active{ background:rgba(0,0,0,0.04); }
 
 .row{
   display:flex;
