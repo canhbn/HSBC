@@ -238,12 +238,13 @@ body{
 /* Amount under account number, right aligned */
 .amount-line{ margin-top:8px; text-align:right; }
 .amount{
-  font-weight:800;
+  font-weight:400;     /* không in đậm */
   font-size:15px;
   white-space:nowrap;
+  color: var(--text);  /* luôn màu đen */
 }
-.amount.pos{ color:var(--green); }
-.amount.neg{ color:var(--text); }
+.amount.pos{ color:var(--text); } /* override */
+.amount.neg{ color:var(--text); } /* override */
 
 .divider{ height:1px; background:rgba(0,0,0,0.10); }
 
@@ -335,3 +336,4 @@ body{
   font-weight:700;
   line-height:1.35;
 }
+
