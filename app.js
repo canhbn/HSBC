@@ -268,6 +268,12 @@ async function loadBalances(){
 
 function formatVND(n){
   const abs = Math.abs(n);
+  const s = abs.toLocaleString("en-US");
+  return (n < 0 ? "-" : "") + s + " VND";
+}
+  
+function formatVNDCreditCard(n){
+  const abs = Math.abs(n);
   const s = abs.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -407,7 +413,7 @@ function renderCreditTransactions(rows){
 
       const right = document.createElement("div");
       right.className = "cc-amt " + (t.amount >= 0 ? "pos" : "neg");
-      right.textContent = formatVND(t.amount); // reuse formatVND from Screen 4
+      right.textContent = formatVNDCreditCard(t.amount);
 
       line.appendChild(left);
       line.appendChild(right);
@@ -576,6 +582,7 @@ window.addEventListener("popstate", (e) => {
   // Preload pin in background (best-effort)
   loadPin();
 })();
+
 
 
 
