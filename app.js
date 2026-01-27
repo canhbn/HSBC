@@ -366,6 +366,75 @@ async function loadCurrentAccountTxns(){
 }
 
 /* =======================
+   Screen 5 transactions from TXT
+======================= */
+function parseCreditTransactionsTxt(txt){
+  return txt
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith("#"))
+    .map(line => {
+      const [date, desc, amount] = line.split("|").map(x => (x || "").trim());
+      return { date, desc, amount: Number(amount) };
+    })
+    .filter(r => r.date && r.desc && Number.isFinite(r.amount));
+}
+
+function renderCreditTransactions(rows){
+  ccContainer.innerHTML = "";
+  const grouped = groupByDate(rows.map(r => ({ ...r, name: r.desc }))); 
+  // reuse groupByDate(date) from Screen 4 (expects r.date)
+
+  grouped.forEach(([date, items]) => {
+    const chip = document.createElement("div");
+    chip.className = "date-chip";
+    chip.textContent = date;
+    ccContainer.appendChild(chip);
+
+    items.forEach((t) => {
+      const card = document.createElement("div");
+      card.className = "cc-item";
+
+      const line = document.createElement("div");
+      line.className = "cc-line";
+
+      const left = document.createElement("div");
+      left.className = "cc-desc";
+      left.textContent = t.desc ?? t.name;
+
+      const right = document.createElement("div");
+      right.className = "cc-amt " + (t.amount >= 0 ? "pos" : "neg");
+      right.textContent = formatVND(t.amount); // reuse formatVND from Screen 4
+
+      line.appendChild(left);
+      line.appendChild(right);
+      card.appendChild(line);
+
+      ccContainer.appendChild(card);
+    });
+  });
+}
+
+async function loadCreditCardTxns(){
+  ccLoading.classList.remove("hidden");
+  ccError.classList.add("hidden");
+  ccContainer.innerHTML = "";
+
+  try{
+    const res = await fetch("./transactions_credit.txt", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const txt = await res.text();
+    const rows = parseCreditTransactionsTxt(txt);
+    renderCreditTransactions(rows);
+  } catch(e){
+    ccError.classList.remove("hidden");
+  } finally {
+    ccLoading.classList.add("hidden");
+  }
+}
+
+
+/* =======================
    Change PIN (Screen 7)
 ======================= */
 
@@ -438,7 +507,7 @@ logoffBtn.addEventListener("click", () => {
 
 // Screen 3 navigation
 rowCA.addEventListener("click", () => { showScreen("s4"); loadCurrentAccountTxns(); });
-rowCC.addEventListener("click", () => showScreen("s5"));
+rowCC.addEventListener("click", () => { showScreen("s5"); loadCreditCardTxns(); });
 
 // Pay & transfer
 payTransferBtn.addEventListener("click", () => showScreen("s8"));
@@ -504,4 +573,5 @@ window.addEventListener("popstate", (e) => {
   // Preload pin in background (best-effort)
   loadPin();
 })();
+
 
