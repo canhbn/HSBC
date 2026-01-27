@@ -35,6 +35,11 @@ const txnLoading = document.getElementById("txnLoading");
 const txnError = document.getElementById("txnError");
 const txnContainer = document.getElementById("txnContainer");
 
+// Screen 5 credit txn DOM
+const ccLoading = document.getElementById("ccLoading");
+const ccError = document.getElementById("ccError");
+const ccContainer = document.getElementById("ccContainer");
+
 // Screen 6/7
 const changePinMenu = document.getElementById("changePinMenu");
 const changePinError = document.getElementById("changePinError");
@@ -499,3 +504,4 @@ window.addEventListener("popstate", (e) => {
   // Preload pin in background (best-effort)
   loadPin();
 })();
+
