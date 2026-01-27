@@ -268,7 +268,10 @@ async function loadBalances(){
 
 function formatVND(n){
   const abs = Math.abs(n);
-  const s = abs.toLocaleString("en-US");
+  const s = abs.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
   return (n < 0 ? "-" : "") + s + " VND";
 }
 
@@ -573,5 +576,6 @@ window.addEventListener("popstate", (e) => {
   // Preload pin in background (best-effort)
   loadPin();
 })();
+
 
 
