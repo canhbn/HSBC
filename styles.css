@@ -6,6 +6,7 @@
   --border:#d9d9de;
   --red:#db0011;
   --green:#0a8f3c;
+  --yellow:#f2b400;
 }
 
 *{ box-sizing:border-box; }
@@ -72,6 +73,10 @@ body{
   padding:14px 14px;
   font-size:16px;
   font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
 }
 .btn-red{
   background:var(--red);
@@ -79,6 +84,19 @@ body{
 }
 .btn-red:active{ filter:brightness(0.92); }
 .btn:disabled{ opacity:0.45; }
+.btn-ghost{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.btn-ghost:active{ background:rgba(0,0,0,0.04); }
+.btn-white{
+  background:#fff;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.btn-white:active{ background:rgba(0,0,0,0.03); }
+.btn-icon svg{ width:20px; height:20px; }
 
 /* Screen 2 */
 .panel{
@@ -89,6 +107,14 @@ body{
 }
 .h1{ font-size:18px; font-weight:700; margin-bottom:6px; }
 .h2{ font-size:14px; color:var(--muted); margin-bottom:14px; }
+
+.label{
+  margin-top:12px;
+  margin-bottom:8px;
+  font-size:13px;
+  color:var(--muted);
+  font-weight:600;
+}
 
 /* 6 PIN boxes */
 .pin6{
@@ -124,6 +150,17 @@ body{
   font-size:14px;
   margin-top:8px;
 }
+.ok{
+  background:#f0fff4;
+  border:1px solid #c8f0d2;
+  color:#0a5b23;
+  border-radius:12px;
+  padding:10px 12px;
+  font-size:14px;
+  margin-top:8px;
+}
+
+.bottom-actions{ margin-top:14px; }
 
 /* Screen 3 */
 .accounts-header{
@@ -156,12 +193,16 @@ body{
   justify-content:center;
   padding:0;
 }
-.icon-btn svg{
-  width:22px;
-  height:22px;
+.icon-btn svg{ width:22px; height:22px; }
+.icon-btn:active{ background:rgba(255,255,255,0.20); }
+
+/* logoff icon: white background for contrast */
+.icon-btn-white{
+  background:#fff;
+  color:var(--red);
 }
-.icon-btn:active{
-  background:rgba(255,255,255,0.20);
+.icon-btn-white:active{
+  background:rgba(255,255,255,0.88);
 }
 
 .card{
@@ -189,17 +230,13 @@ body{
   gap:12px;
   padding:14px 14px;
 }
-.row.v2 .info{
-  width:100%;
-}
+.row.v2 .info{ width:100%; }
+
 .b{ font-weight:800; font-size:16px; }
 .m{ color:var(--muted); font-size:13px; margin-top:4px; }
 
 /* Amount under account number, right aligned */
-.amount-line{
-  margin-top:8px;
-  text-align:right;
-}
+.amount-line{ margin-top:8px; text-align:right; }
 .amount{
   font-weight:800;
   font-size:15px;
@@ -208,10 +245,7 @@ body{
 .amount.pos{ color:var(--green); }
 .amount.neg{ color:var(--text); }
 
-.divider{
-  height:1px;
-  background:rgba(0,0,0,0.10);
-}
+.divider{ height:1px; background:rgba(0,0,0,0.10); }
 
 /* Screen 4/5 */
 .center-head{
@@ -262,4 +296,42 @@ body{
   padding:14px;
   text-align:center;
   color:var(--muted);
+}
+
+/* Menus */
+.menu{ margin-top:10px; }
+.menu-item{
+  width:100%;
+  border:none;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 14px;
+  font-size:15px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.menu-item:active{ background:rgba(0,0,0,0.03); }
+.chev{ color:var(--muted); font-size:20px; line-height:1; }
+
+/* Screen 9 */
+.center{ text-align:center; }
+.warn{
+  margin: 8px auto 12px;
+  width:56px; height:56px;
+  border-radius:16px;
+  background: rgba(242,180,0,0.16);
+  display:flex; align-items:center; justify-content:center;
+  color: var(--yellow);
+}
+.warn svg{ width:28px; height:28px; }
+.unavail{
+  font-size:15px;
+  color:var(--text);
+  font-weight:700;
+  line-height:1.35;
 }
