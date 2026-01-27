@@ -1,4 +1,5 @@
-const PIN_OK = "309019";
+const DEFAULT_PIN = "309019";
+const PIN_STORAGE_KEY = "pin_override"; // stores new pin locally on device (since GitHub Pages is read-only)
 
 const topbar = document.getElementById("topbar");
 const backBtn = document.getElementById("backBtn");
@@ -9,15 +10,21 @@ const screens = {
   s3: document.getElementById("s3"),
   s4: document.getElementById("s4"),
   s5: document.getElementById("s5"),
+  s6: document.getElementById("s6"),
+  s7: document.getElementById("s7"),
+  s8: document.getElementById("s8"),
+  s9: document.getElementById("s9"),
 };
 
 const goPinBtn = document.getElementById("goPin");
 const pinError = document.getElementById("pinError");
 const submitPin = document.getElementById("submitPin");
+const securityBtn = document.getElementById("securityBtn");
 
 const rowCA = document.getElementById("rowCA");
 const rowCC = document.getElementById("rowCC");
 const logoffBtn = document.getElementById("logoffBtn");
+const payTransferBtn = document.getElementById("payTransferBtn");
 
 // Screen 3 amounts
 const amountCA = document.getElementById("amountCA");
@@ -28,7 +35,17 @@ const txnLoading = document.getElementById("txnLoading");
 const txnError = document.getElementById("txnError");
 const txnContainer = document.getElementById("txnContainer");
 
-// PIN boxes
+// Screen 6/7
+const changePinMenu = document.getElementById("changePinMenu");
+const changePinError = document.getElementById("changePinError");
+const changePinOk = document.getElementById("changePinOk");
+const savePinBtn = document.getElementById("savePinBtn");
+
+// Screen 8
+const optBetween = document.getElementById("optBetween");
+const optVietnam = document.getElementById("optVietnam");
+
+// PIN boxes (login)
 const pinBoxes = [
   document.getElementById("pin0"),
   document.getElementById("pin1"),
@@ -37,6 +54,12 @@ const pinBoxes = [
   document.getElementById("pin4"),
   document.getElementById("pin5"),
 ];
+
+// PIN boxes (change pin)
+const oldBoxes = ["old0","old1","old2","old3","old4","old5"].map(id => document.getElementById(id));
+const newBoxes = ["new0","new1","new2","new3","new4","new5"].map(id => document.getElementById(id));
+
+let currentPin = DEFAULT_PIN; // resolved at runtime from localStorage or pin.txt
 
 function showScreen(id, push=true){
   Object.values(screens).forEach(el => el.classList.add("hidden"));
@@ -53,87 +76,77 @@ function showScreen(id, push=true){
 }
 
 /* =======================
-   PIN logic (6 masked boxes)
+   PIN helpers (6 boxes)
 ======================= */
 
 function onlyDigit(ch){ return /^[0-9]$/.test(ch); }
 
-function getPinValue(){
-  return pinBoxes.map(b => (b.value || "").replace(/\D/g,"")).join("");
+function getBoxesValue(boxes){
+  return boxes.map(b => (b.value || "").replace(/\D/g,"")).join("");
 }
 
-function updatePinUI(){
-  pinBoxes.forEach(b => {
-    b.value = (b.value || "").replace(/\D/g,"").slice(0,1);
-    b.classList.toggle("filled", b.value.length === 1);
-  });
-
-  submitPin.disabled = (getPinValue().length !== 6);
-
-  if (!pinError.classList.contains("hidden")) pinError.classList.add("hidden");
+function setBoxCommonAttrs(box){
+  box.setAttribute("autocomplete", "off");
+  box.setAttribute("autocorrect", "off");
+  box.setAttribute("autocapitalize", "off");
+  box.setAttribute("spellcheck", "false");
 }
 
-function clearPin(){
-  pinBoxes.forEach(b => { b.value = ""; b.classList.remove("filled"); });
-  submitPin.disabled = true;
-  pinError.classList.add("hidden");
-}
-
-function focusBox(i){
+function focusBox(boxes, i){
   const idx = Math.max(0, Math.min(5, i));
-  pinBoxes[idx].focus();
-  pinBoxes[idx].select?.();
+  boxes[idx].focus();
+  boxes[idx].select?.();
 }
 
-function wirePinBoxes(){
-  pinBoxes.forEach((box, idx) => {
-    // keep masked; avoid iOS suggestions
-    box.setAttribute("autocomplete", "off");
-    box.setAttribute("autocorrect", "off");
-    box.setAttribute("autocapitalize", "off");
-    box.setAttribute("spellcheck", "false");
+function clearBoxes(boxes){
+  boxes.forEach(b => { b.value = ""; b.classList.remove("filled"); });
+}
+
+function wireBoxes(boxes, onUpdate){
+  boxes.forEach((box, idx) => {
+    setBoxCommonAttrs(box);
 
     box.addEventListener("input", () => {
       const raw = (box.value || "").replace(/\D/g,"");
 
       if (raw.length <= 1) {
         box.value = raw;
-        updatePinUI();
-        if (raw.length === 1 && idx < 5) focusBox(idx + 1);
+        onUpdate();
+        if (raw.length === 1 && idx < 5) focusBox(boxes, idx + 1);
         return;
       }
 
-      // Spread pasted digits
+      // paste: spread digits
       const digits = raw.split("");
       for (let k = 0; k < digits.length && (idx + k) < 6; k++){
-        pinBoxes[idx + k].value = digits[k];
+        boxes[idx + k].value = digits[k];
       }
-      updatePinUI();
-      focusBox(Math.min(5, idx + digits.length));
+      onUpdate();
+      focusBox(boxes, Math.min(5, idx + digits.length));
     });
 
     box.addEventListener("keydown", (e) => {
       if (e.key === "Backspace") {
         if (box.value) {
           box.value = "";
-          updatePinUI();
+          onUpdate();
           e.preventDefault();
           return;
         }
         if (idx > 0) {
-          pinBoxes[idx - 1].value = "";
-          updatePinUI();
-          focusBox(idx - 1);
+          boxes[idx - 1].value = "";
+          onUpdate();
+          focusBox(boxes, idx - 1);
           e.preventDefault();
         }
         return;
       }
 
-      if (e.key === "ArrowLeft") { if (idx > 0) focusBox(idx - 1); e.preventDefault(); return; }
-      if (e.key === "ArrowRight") { if (idx < 5) focusBox(idx + 1); e.preventDefault(); return; }
+      if (e.key === "ArrowLeft") { if (idx > 0) focusBox(boxes, idx - 1); e.preventDefault(); return; }
+      if (e.key === "ArrowRight") { if (idx < 5) focusBox(boxes, idx + 1); e.preventDefault(); return; }
 
       if (e.key === "Enter") {
-        if (!submitPin.disabled) submitPin.click();
+        // handled by caller (button click)
         e.preventDefault();
         return;
       }
@@ -146,7 +159,60 @@ function wirePinBoxes(){
 }
 
 /* =======================
-   Balances from TXT (Screen 3)
+   Load PIN from pin.txt + local override
+======================= */
+
+function getLocalPin(){
+  const v = (localStorage.getItem(PIN_STORAGE_KEY) || "").trim();
+  return /^[0-9]{6}$/.test(v) ? v : null;
+}
+
+async function loadPin(){
+  const local = getLocalPin();
+  if (local) { currentPin = local; return currentPin; }
+
+  try{
+    const res = await fetch("./pin.txt", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const txt = await res.text();
+    const lines = txt.split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+    const candidate = (lines[0] || "").trim();
+    if (/^[0-9]{6}$/.test(candidate)) currentPin = candidate;
+    else currentPin = DEFAULT_PIN;
+  } catch {
+    currentPin = DEFAULT_PIN;
+  }
+  return currentPin;
+}
+
+/* =======================
+   Screen 2 (login) logic
+======================= */
+
+function updateLoginUI(){
+  pinBoxes.forEach(b => {
+    b.value = (b.value || "").replace(/\D/g,"").slice(0,1);
+    b.classList.toggle("filled", b.value.length === 1);
+  });
+  submitPin.disabled = (getBoxesValue(pinBoxes).length !== 6);
+  if (!pinError.classList.contains("hidden")) pinError.classList.add("hidden");
+}
+
+function resetLogin(){
+  clearBoxes(pinBoxes);
+  submitPin.disabled = true;
+  pinError.classList.add("hidden");
+}
+
+async function enterLogin(){
+  await loadPin();
+  resetLogin();
+  showScreen("s2");
+  setTimeout(() => focusBox(pinBoxes, 0), 50);
+}
+
+/* =======================
+   Screen 3 balances from TXT
 ======================= */
 
 function formatMoneyVND(n){
@@ -175,7 +241,6 @@ function applyAmount(el, value){
 }
 
 async function loadBalances(){
-  // show placeholders while loading
   amountCA.textContent = "—";
   amountCC.textContent = "—";
   amountCA.classList.remove("pos","neg");
@@ -189,13 +254,11 @@ async function loadBalances(){
 
     if (m.has("CA")) applyAmount(amountCA, m.get("CA"));
     if (m.has("CC")) applyAmount(amountCC, m.get("CC"));
-  } catch(e){
-    // keep placeholders if file missing / error
-  }
+  } catch {}
 }
 
 /* =======================
-   Transactions from TXT (Screen 4)
+   Screen 4 transactions from TXT
 ======================= */
 
 function formatVND(n){
@@ -290,7 +353,7 @@ async function loadCurrentAccountTxns(){
     const txt = await res.text();
     const rows = parseTransactionsTxt(txt);
     renderTransactions(rows);
-  } catch(e){
+  } catch {
     txnError.classList.remove("hidden");
   } finally {
     txnLoading.classList.add("hidden");
@@ -298,43 +361,116 @@ async function loadCurrentAccountTxns(){
 }
 
 /* =======================
+   Change PIN (Screen 7)
+======================= */
+
+function updateChangePinUI(){
+  [...oldBoxes, ...newBoxes].forEach(b => {
+    b.value = (b.value || "").replace(/\D/g,"").slice(0,1);
+    b.classList.toggle("filled", b.value.length === 1);
+  });
+
+  const oldVal = getBoxesValue(oldBoxes);
+  const newVal = getBoxesValue(newBoxes);
+  savePinBtn.disabled = !(oldVal.length === 6 && newVal.length === 6);
+
+  changePinError.classList.add("hidden");
+  changePinOk.classList.add("hidden");
+}
+
+function resetChangePin(){
+  clearBoxes(oldBoxes);
+  clearBoxes(newBoxes);
+  savePinBtn.disabled = true;
+  changePinError.classList.add("hidden");
+  changePinOk.classList.add("hidden");
+}
+
+function saveNewPinToLocalStorage(pin){
+  localStorage.setItem(PIN_STORAGE_KEY, pin);
+  currentPin = pin;
+}
+
+/* =======================
    Navigation / handlers
 ======================= */
 
-// Screen 1 -> Screen 2
-goPinBtn.addEventListener("click", () => {
-  clearPin();
-  showScreen("s2");
-  setTimeout(() => focusBox(0), 50);
+goPinBtn.addEventListener("click", () => { enterLogin(); });
+
+securityBtn.addEventListener("click", () => {
+  showScreen("s6");
 });
 
-// Continue
-submitPin.addEventListener("click", () => {
-  const v = getPinValue();
-  if (v.length !== 6 || v !== PIN_OK) {
+changePinMenu.addEventListener("click", async () => {
+  await loadPin();
+  resetChangePin();
+  showScreen("s7");
+  setTimeout(() => focusBox(oldBoxes, 0), 50);
+});
+
+submitPin.addEventListener("click", async () => {
+  await loadPin();
+
+  const v = getBoxesValue(pinBoxes);
+  if (v.length !== 6 || v !== currentPin) {
     pinError.textContent = "You've entered your PIN incorrectly. Please try again.";
     pinError.classList.remove("hidden");
     const firstEmpty = pinBoxes.findIndex(b => !b.value);
-    focusBox(firstEmpty === -1 ? 5 : firstEmpty);
+    focusBox(pinBoxes, firstEmpty === -1 ? 5 : firstEmpty);
     return;
   }
+
   pinError.classList.add("hidden");
   showScreen("s3");
-  loadBalances(); // load amounts whenever entering screen 3
+  loadBalances();
 });
 
-// Screen 3: log-off -> screen 1
 logoffBtn.addEventListener("click", () => {
-  clearPin();
+  resetLogin();
+  resetChangePin();
   showScreen("s1");
 });
 
-// Screen 3 navigation (tap row)
-rowCA.addEventListener("click", () => {
-  showScreen("s4");
-  loadCurrentAccountTxns();
-});
+// Screen 3 navigation
+rowCA.addEventListener("click", () => { showScreen("s4"); loadCurrentAccountTxns(); });
 rowCC.addEventListener("click", () => showScreen("s5"));
+
+// Pay & transfer
+payTransferBtn.addEventListener("click", () => showScreen("s8"));
+optBetween.addEventListener("click", () => showScreen("s9"));
+optVietnam.addEventListener("click", () => showScreen("s9"));
+
+// Save PIN
+savePinBtn.addEventListener("click", async () => {
+  await loadPin();
+
+  const oldVal = getBoxesValue(oldBoxes);
+  const newVal = getBoxesValue(newBoxes);
+
+  if (oldVal !== currentPin) {
+    changePinError.textContent = "You've entered your PIN incorrectly. Please try again.";
+    changePinError.classList.remove("hidden");
+    changePinOk.classList.add("hidden");
+    focusBox(oldBoxes, 0);
+    return;
+  }
+
+  if (!/^[0-9]{6}$/.test(newVal)) {
+    changePinError.textContent = "Please enter a 6-digit PIN.";
+    changePinError.classList.remove("hidden");
+    changePinOk.classList.add("hidden");
+    return;
+  }
+
+  saveNewPinToLocalStorage(newVal);
+  changePinError.classList.add("hidden");
+  changePinOk.classList.remove("hidden");
+
+  // Return to login after a short moment (no async promises)
+  setTimeout(() => {
+    enterLogin();
+  }, 500);
+});
 
 // Back
 backBtn.addEventListener("click", () => history.back());
@@ -348,11 +484,18 @@ window.addEventListener("popstate", (e) => {
 
 // Init
 (function init(){
-  wirePinBoxes();
-  updatePinUI();
+  wireBoxes(pinBoxes, updateLoginUI);
+  wireBoxes(oldBoxes, updateChangePinUI);
+  wireBoxes(newBoxes, updateChangePinUI);
+
+  updateLoginUI();
+  updateChangePinUI();
 
   const h = location.hash || "#/s1";
-  const m = h.match(/^#\/(s[1-5])$/);
+  const m = h.match(/^#\/(s[1-9])$/);
   if (m && screens[m[1]]) showScreen(m[1], true);
   else showScreen("s1", true);
+
+  // Preload pin in background (best-effort)
+  loadPin();
 })();
