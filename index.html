@@ -56,6 +56,11 @@
             <button class="btn btn-red" id="submitPin" disabled>Continue</button>
           </div>
         </div>
+
+        <!-- bottom button -->
+        <div class="bottom-actions">
+          <button class="btn btn-ghost" id="securityBtn">Security</button>
+        </div>
       </section>
 
       <!-- Screen 3 -->
@@ -64,8 +69,8 @@
           <div class="accounts-header-row">
             <div class="accounts-title">Accounts</div>
 
-            <button class="icon-btn" id="logoffBtn" type="button" aria-label="Log off">
-              <!-- simple log-off icon (door + arrow) -->
+            <button class="icon-btn icon-btn-white" id="logoffBtn" type="button" aria-label="Log off">
+              <!-- door + arrow -->
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M10 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 <path d="M14 12H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -102,6 +107,22 @@
             </div>
           </button>
         </div>
+
+        <!-- bottom button -->
+        <div class="bottom-actions">
+          <button class="btn btn-white" id="payTransferBtn">
+            <span class="btn-icon">
+              <!-- two-way arrows -->
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 7h13l-3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20 7l-3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M17 17H4l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 17l3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Pay and transfer
+          </button>
+        </div>
       </section>
 
       <!-- Screen 4 -->
@@ -128,6 +149,85 @@
         <div class="section-title">Transaction history</div>
 
         <div class="busy">System busy. Unable to load transaction.</div>
+      </section>
+
+      <!-- Screen 6: Security -->
+      <section class="screen hidden" id="s6">
+        <div class="panel">
+          <div class="h1">Security</div>
+          <div class="menu">
+            <button class="menu-item" id="changePinMenu" type="button">
+              Change PIN
+              <span class="chev">›</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 7: Change PIN -->
+      <section class="screen hidden" id="s7">
+        <div class="panel">
+          <div class="h1">Change PIN</div>
+
+          <div class="label">Enter old PIN</div>
+          <div class="pin6" aria-label="Old PIN">
+            <input class="pinbox" id="old0" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="old1" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="old2" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="old3" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="old4" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="old5" type="password" inputmode="numeric" maxlength="1" />
+          </div>
+
+          <div class="label">Enter new PIN</div>
+          <div class="pin6" aria-label="New PIN">
+            <input class="pinbox" id="new0" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="new1" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="new2" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="new3" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="new4" type="password" inputmode="numeric" maxlength="1" />
+            <input class="pinbox" id="new5" type="password" inputmode="numeric" maxlength="1" />
+          </div>
+
+          <div class="error hidden" id="changePinError">Unable to change PIN.</div>
+          <div class="ok hidden" id="changePinOk">PIN updated.</div>
+
+          <div class="actions">
+            <button class="btn btn-red" id="savePinBtn" disabled>Save</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 8: Pay and transfer options -->
+      <section class="screen hidden" id="s8">
+        <div class="panel">
+          <div class="h1">Pay and transfer</div>
+          <div class="menu">
+            <button class="menu-item" id="optBetween" type="button">
+              Transfer between your HSBC accounts.
+              <span class="chev">›</span>
+            </button>
+            <button class="menu-item" id="optVietnam" type="button">
+              Transfer in Vietnam
+              <span class="chev">›</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Screen 9: Unavailable -->
+      <section class="screen hidden" id="s9">
+        <div class="panel center">
+          <div class="warn">
+            <!-- warning icon -->
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3l10 18H2L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M12 9v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 17h.01" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="unavail">Service is unavailable. Please try again later.</div>
+        </div>
       </section>
 
     </main>
