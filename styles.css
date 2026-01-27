@@ -299,6 +299,35 @@ body{
   color:var(--muted);
 }
 
+/* Screen 5 - credit card txn simple rows */
+.cc-item{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 12px;
+  margin-bottom: 10px;
+}
+
+.cc-line{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+}
+
+.cc-desc{
+  font-size:14px;
+  color: var(--text);
+}
+
+.cc-amt{
+  font-size:14px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.cc-amt.pos{ color: var(--green); }
+.cc-amt.neg{ color: var(--text); }
+
 /* Menus */
 .menu{ margin-top:10px; }
 .menu-item{
@@ -336,4 +365,5 @@ body{
   font-weight:700;
   line-height:1.35;
 }
+
 
