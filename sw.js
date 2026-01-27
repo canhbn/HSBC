@@ -1,4 +1,4 @@
-const CACHE = "hsbc-mock-v4";
+const CACHE = "hsbc-mock-v5";
 const ASSETS = [
   "./",
   "./index.html",
