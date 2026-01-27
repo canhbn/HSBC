@@ -148,7 +148,9 @@
 
         <div class="section-title">Transaction history</div>
 
-        <div class="busy">System busy. Unable to load transaction.</div>
+        <div id="ccLoading" class="busy">Loading transactions...</div>
+        <div id="ccError" class="error hidden">Unable to load transaction history.</div>
+        <div id="ccContainer"></div>
       </section>
 
       <!-- Screen 6: Security -->
@@ -241,3 +243,4 @@
   </script>
 </body>
 </html>
+
