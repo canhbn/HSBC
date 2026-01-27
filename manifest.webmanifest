@@ -1,6 +1,6 @@
 {
-  "name": "HSBC Mock",
-  "short_name": "HSBC Mock",
+  "name": "HSBC VN",
+  "short_name": "HSBC VN",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -10,3 +10,4 @@
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
+
