@@ -1,0 +1,4 @@
+#DATE|DESC|AMOUNT
+Jan 26, 2026|Grab|-250000
+Jan 26, 2026|Refund|120000
+Jan 25, 2026|Netflix|-70000
