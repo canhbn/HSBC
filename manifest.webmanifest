@@ -1,6 +1,6 @@
 {
-  "name": "HSBC VN",
-  "short_name": "HSBC VN",
+  "name": "DEMO APP",
+  "short_name": "DEMO APP",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
